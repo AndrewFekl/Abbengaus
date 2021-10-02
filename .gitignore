@@ -4,3 +4,4 @@ __pycache__
 !.gitignore 
 venv/ 
 some_scripts.txt 
+db.sqlite3 
