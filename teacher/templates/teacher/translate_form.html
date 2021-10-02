@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <title>translation</title>
+    </head>
+    <body>
+        <h2>Перевод английских слов</h2>
+        <p>Введите в форму слово, которое хотите перевести </p>
+        <p>Если вы пользуетесь сервисом первый раз, введите не менее 4 слов для корректной работы</p>
+        <form method="post" action="{% url 'translate' %}">
+            {% csrf_token %}
+            <label for="original_word"> Слово на английском: </label>
+            <input type="text" id="original_word" name="original_word"  value = {{default_word}} ><br>
+
+            {% if error_message %}
+            <p><strong>{{ error_message }}</strong></p>
+                <label for="translated_word"> Перевод слова: </label>
+                <input type="text" id="translated_word" name="translated_word" required><br>
+            {% endif %}
+
+            <input type="submit" id="word_submit">
+        </form>
+        {% if add_message %}<p>{{add_message}}<strong>{{original_word}}</strong></p>{% endif %}
+        <p>Перевод слова: <strong>{{translated_word}}</strong></p>
+        <p>&nbsp;</p>
+        <p><a href="{% url 'train' %}">Тренировать слова</a></p>
+        <p><a href="{% url 'logout' %}">Выйти</a></p>
+
+    </body>
+</html>
+

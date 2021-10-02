@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Главная страница</title>
+    </head>
+    <body>
+        {% if user.is_authenticated %}
+            <p><b>Привет, {{ user.username }}!</b></p>
+            <p>В вашем списке на изучение {{words_quantity}} слов</p>
+            <p>Успешно выучено {{long_memory_words}} слов</p>
+            <h2>Выберите режим записи слов или тренировки</h2>
+            <p>&nbsp;</p>
+            <p><a href="{% url 'translate' %}">Пополнение базы слов</a></p>
+            <p><a href="{% url 'train' %}">Тренировать слова</a></p>
+            <p>&nbsp;</p>
+            <p><a href="{% url 'logout' %}">Выйти</a></p>
+        {% else %}
+            <h2>Вы не вошли в аккаунт</h2>
+            <p>Для продолжения работы войдите в аккаунт или зарегистрируйтесь</p>
+            <p>&nbsp;</p>
+            <a href="{% url 'login' %}">Войти</a>
+            <p><a href="{% url 'signup' %}">Зарегистрироваться</a></p>
+        {% endif %}
+    </body>
+
+</html>

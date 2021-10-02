@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8"/>
+        <title>training</title>
+    </head>
+    <body>
+        <h2>Тренировка слов</h2>
+        <p>Сегодня у вас {{train_quantity}} слов для тренировки</p>
+        <p>Выберите перевод для слова {{test_word}}</p>
+        <form method="post" action="{% url 'train' %}">
+            {% csrf_token %}
+            {{form.as_p}}
+            <input type="hidden" id="word_number" name="word_number"  value={{word_number}}>
+            <input type="hidden" id="wright_translate" name="wright_translate"  value={{wright_translate}}>
+            <input type="submit" id="word_submit">
+        </form>
+
+        {% if verdict %}
+            <p>{{verdict}}</p>
+        {%endif%}
+        {% if leading %}
+            <p>{{leading}}</p>
+        {%endif%}
+        {% if test_message %}
+            <p>{{test_message}}</p>
+        {%endif%}
+
+        <p>&nbsp;</p>
+        <p><a href="{% url 'translate' %}">Перевод новых слов</a></p>
+        <p><a href="{% url 'logout' %}">Выйти</a></p>
+
+    </body>
+</html>
+
