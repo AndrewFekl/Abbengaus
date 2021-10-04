@@ -19,12 +19,13 @@
         {% if verdict %}
             <p>{{verdict}}</p>
         {%endif%}
-        {% if leading %}
-            <p>{{leading}}</p>
-        {%endif%}
         {% if test_message %}
             <p>{{test_message}}</p>
         {%endif%}
+        {% if leading %}
+            <p>{{leading}}</p>
+        {%endif%}
+
 
         <p>&nbsp;</p>
         <p><a href="{% url 'translate' %}">Перевод новых слов</a></p>

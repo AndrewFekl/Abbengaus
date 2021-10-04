@@ -33,13 +33,30 @@ class TrainingView(LoginRequiredMixin, View):
     def get_test_set(self):
         # Получаем тренировочный сет пользователя на текущую дату и его размер
         user = self.request.user
+
         training_set = user.dictonary_set.filter(worktable__training_date__lte=timezone.now())
+
         train_quantity = len(training_set)
 
         # Список переводов для формирования тестового списка
         training_words = []
-        for line in training_set:
-            training_words.append(line.translated_word)
+        if train_quantity > 0:
+            for line in training_set:
+                training_words.append(line.translated_word)
+        else:
+            fool_test_set = ['', '', '', '']
+            wright_word = ''
+            wright_translate = ''
+            return fool_test_set, train_quantity, wright_word, wright_translate
+
+        if train_quantity < 4:
+            add_quantity = 4-train_quantity
+            k = 0
+            while k < add_quantity:
+                add_pk = random.randint(1, 10)
+                add_word = Dictonary.objects.get(pk=add_pk).translated_word
+                training_words.append(add_word)
+                k +=1
 
         # количество вариантов ответа помимо правильного
         test_quantity = 3
@@ -67,16 +84,16 @@ class TrainingView(LoginRequiredMixin, View):
                 fool_test_set.append(test_set[n])
                 n += 1
 
-        return training_set, fool_test_set, train_quantity, wright_word, wright_translate
+        return fool_test_set, train_quantity, wright_word, wright_translate
 
 
     def get(self, request):
 
-        training_set, fool_test_set, train_quantity, wright_word, wright_translate = self.get_test_set()
+        fool_test_set, train_quantity, wright_word, wright_translate = self.get_test_set()
 
         form = TrainingForm(fool_test_set)
 
-        word_number = self.word_number + 1
+        word_number = self.word_number #+1
 
         context = {'train_quantity': train_quantity,
                    'test_word': wright_word,
@@ -88,18 +105,22 @@ class TrainingView(LoginRequiredMixin, View):
 
     def post(self, request):
 
+        user = request.user
+
         answer = request.POST.get('Ответ')
-        if request.POST.get('word_number'):
-            self.word_number = int(request.POST.get('word_number'))
+        """if request.POST.get('word_number'):
+            self.word_number = int(request.POST.get('word_number'))"""
         reference = request.POST.get('wright_translate')
 
-        training_set, fool_test_set, train_quantity, wright_word, wright_translate = self.get_test_set()
-        if self.word_number == 1:
+        """if self.word_number == 1:
             record_word = training_set[self.word_number - 1]
             test_word = training_set[self.word_number-1].translated_word
         else:
             record_word = training_set[self.word_number]
-            test_word = reference
+            test_word = reference"""
+
+        test_word = reference
+        record_word = user.dictonary_set.get(translated_word=reference)
 
         record = WorkTable.objects.get(user=request.user, word=record_word)
 
@@ -125,6 +146,10 @@ class TrainingView(LoginRequiredMixin, View):
             record.save()
             leading = f'Повторите слово через {delta} дней.'
 
+        test_message = f'Изменен статус слова {record.word.original_word}'
+
+        fool_test_set, train_quantity, wright_word, wright_translate = self.get_test_set()
+
         form = TrainingForm(fool_test_set)
 
         word_number = 0
@@ -135,7 +160,8 @@ class TrainingView(LoginRequiredMixin, View):
                    'verdict': verdict,
                    'leading': leading,
                    'word_number': word_number,
-                   'form': form}
+                   'form': form,
+                   'test_message': test_message}
 
         return render(request, 'teacher/training_form.html', context)
 

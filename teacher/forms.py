@@ -18,3 +18,5 @@ class TrainingForm(forms.Form):
         super(TrainingForm, self).__init__(*args, **kwargs)
         self.fields['Ответ'] = forms.ChoiceField(choices=tuple([(name, name) for name in round_list]), widget=forms.RadioSelect)
 
+
+
