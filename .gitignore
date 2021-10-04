@@ -1,8 +1,9 @@
 *.py[co] 
-__pycache__ 
+__pycache__
+db.sqlite3
 .* 
 !.gitignore 
 venv/ 
 some_scripts.txt 
-db.sqlite3 
+
 
